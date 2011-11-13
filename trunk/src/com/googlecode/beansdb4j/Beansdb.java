@@ -1,6 +1,7 @@
 package com.googlecode.beansdb4j;
 
 import java.io.IOException;
+import java.net.InetSocketAddress;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -45,25 +46,25 @@ public class Beansdb {
     /**
      * host:port -> memcachedclient
      */
-    private Map<ServerItem, MCStore> servers;
+    private Map<InetSocketAddress, MCStore> servers;
     /**
      * host:port -> bucket-index-range
      */
-    private Map<ServerItem, Range> serverBuckets; 
+    private Map<InetSocketAddress, Range> serverBuckets; 
 
-    public Beansdb(Map<ServerItem, Range> servers, int bucketCount, int n, int w, int r) {
+    public Beansdb(Map<InetSocketAddress, Range> servers, int bucketCount, int n, int w, int r) {
         this.bucketCount = bucketCount; 
         this.n = n;
         this.w = w;
         this.r = r;
 
         this.bucketSize = (int)(HASH_SPACE / this.bucketCount);
-        this.serverBuckets = new HashMap<ServerItem, Range>(servers.size());
+        this.serverBuckets = new HashMap<InetSocketAddress, Range>(servers.size());
         this.buckets = new HashMap<Integer, List<MCStore>>();
-        this.servers = new HashMap<ServerItem, MCStore>();
+        this.servers = new HashMap<InetSocketAddress, MCStore>();
         
         try {
-	        for(ServerItem server : servers.keySet()) {
+	        for(InetSocketAddress server : servers.keySet()) {
 	        	Range range = servers.get(server);
 	        	
 	            this.serverBuckets.put(server, servers.get(server)); 
@@ -89,11 +90,11 @@ public class Beansdb {
         }
     }
 
-    public Beansdb(Map<ServerItem, Range> servers, int bucketCount) {
+    public Beansdb(Map<InetSocketAddress, Range> servers, int bucketCount) {
         this(servers, bucketCount, 3, 1, 1);
     }
 
-    public Beansdb(Map<ServerItem, Range> servers) {
+    public Beansdb(Map<InetSocketAddress, Range> servers) {
         this(servers, 16, 3, 1, 1);
     }
 
@@ -204,8 +205,8 @@ public class Beansdb {
     		}
     	}
 		
-		for (ServerItem server : this.serverBuckets.keySet()) {
-			log.info("\t" + server.getHost() + ":" + server.getPort() + " " + this.serverBuckets.get(server).length());
+		for (InetSocketAddress server : this.serverBuckets.keySet()) {
+			log.info("\t" + server.getHostName() + ":" + server.getPort() + " " + this.serverBuckets.get(server).length());
 		}
     }
     
@@ -306,10 +307,10 @@ public class Beansdb {
     }
     
     public static void main(String[] args) {
-    	Map<ServerItem, Range> servers = new HashMap<ServerItem, Range>();
-    	servers.put(new ServerItem("localhost", 7900), new Range(0, 16));
-    	servers.put(new ServerItem("localhost", 7901), new Range(0, 16));
-    	servers.put(new ServerItem("localhost", 7902), new Range(0, 16));
+    	Map<InetSocketAddress, Range> servers = new HashMap<InetSocketAddress, Range>();
+    	servers.put(new InetSocketAddress("localhost", 7900), new Range(0, 16));
+    	servers.put(new InetSocketAddress("localhost", 7901), new Range(0, 16));
+    	servers.put(new InetSocketAddress("localhost", 7902), new Range(0, 16));
     	Beansdb db = new Beansdb(servers, 16, 3, 2, 2);
     	
     	db.set("foo", "bar");

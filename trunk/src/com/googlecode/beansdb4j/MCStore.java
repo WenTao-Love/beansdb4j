@@ -19,8 +19,8 @@ public class MCStore {
         this.mc = new MemcachedClient(new InetSocketAddress(host, port));
     }
 
-    public MCStore(ServerItem server) throws IOException {
-        this(server.getHost(), server.getPort());
+    public MCStore(InetSocketAddress server) throws IOException {
+        this(server.getHostName(), server.getPort());
     }
 
     public Object get(String key) {

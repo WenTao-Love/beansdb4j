@@ -8,6 +8,12 @@ import java.util.concurrent.ExecutionException;
 
 import net.spy.memcached.MemcachedClient;
 
+/**
+ * Wrapper class for the memcached protocol client.
+ * 
+ * @author james
+ *
+ */
 public class MCStore {
     private MemcachedClient mc;
     private String host;

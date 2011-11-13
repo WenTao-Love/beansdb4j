@@ -10,6 +10,12 @@ import java.util.Map;
 
 import org.apache.log4j.Logger;
 
+/**
+ * Beansdb client class. for the sample usage, see the {@link #main(String[])} method.
+ * 
+ * @author james
+ *
+ */
 public class Beansdb {
 	private static final Logger log = Logger.getLogger(Beansdb.class);
 	
@@ -26,15 +32,15 @@ public class Beansdb {
      */
     private long bucketSize;
     /**
-     * beansdb replication node count.
+     * replication node count.
      */
     private int n;
     /**
-     * beansdb the least write-successful node count.
+     * the least write-successful node count.
      */
     private int w;
     /**
-     * beansdb the least read-successful node count.
+     * the least read-successful node count.
      */
     private int r;
 
@@ -60,14 +66,14 @@ public class Beansdb {
 
         this.bucketSize = (int)(HASH_SPACE / this.bucketCount);
         this.serverBuckets = new HashMap<InetSocketAddress, Range>(servers.size());
-        this.buckets = new HashMap<Integer, List<MCStore>>();
-        this.servers = new HashMap<InetSocketAddress, MCStore>();
+        this.buckets = new HashMap<Integer, List<MCStore>>(this.bucketCount);
+        this.servers = new HashMap<InetSocketAddress, MCStore>(servers.size());
         
         try {
 	        for(InetSocketAddress server : servers.keySet()) {
 	        	Range range = servers.get(server);
 	        	
-	            this.serverBuckets.put(server, servers.get(server)); 
+	            this.serverBuckets.put(server, range); 
 	            MCStore store = new MCStore(server);
 	            this.servers.put(server, store);
 	            
@@ -85,17 +91,32 @@ public class Beansdb {
         }
         
         if (log.isDebugEnabled()) {
-        	log.debug("HASH_SPACE:" + HASH_SPACE + ", bucketCount: " + this.bucketCount + ", N: " + this.n + ", W: " + this.w
-        			 + ", R: " + this.r + ", bucketSize:" + this.bucketSize);
+        	log.debug("HASH_SPACE:\t" + HASH_SPACE 
+        			+ "\nbucketCount: " + this.bucketCount 
+        			+ "\nN: " + this.n 
+        			+ "\nW: " + this.w
+        			+ "\nR: " + this.r 
+        			+ "\nbucketSize:" + this.bucketSize);
         }
     }
 
+    /**
+     * Default NWR is 311 which is very efficient for read, write, but have weak consistency.
+     * 
+     * @param servers
+     * @param bucketCount
+     */
     public Beansdb(Map<InetSocketAddress, Range> servers, int bucketCount) {
         this(servers, bucketCount, 3, 1, 1);
     }
 
+    /**
+     * Default bucket count is 16.
+     * 
+     * @param servers
+     */
     public Beansdb(Map<InetSocketAddress, Range> servers) {
-        this(servers, 16, 3, 1, 1);
+        this(servers, 16);
     }
 
 
@@ -261,6 +282,9 @@ public class Beansdb {
         return successCount >= this.w;
     }
 
+    /**
+     * Close all the beansdb clients.
+     */
     public void close() {
     	for (MCStore server : this.servers.values()) {
     		server.close();

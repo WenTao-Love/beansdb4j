@@ -1,0 +1,58 @@
+<project name="beansdb4j" basedir="./" default="dist">
+
+        <!-- Local system paths -->
+        <property name="src.dir" value="${basedir}/src" />
+        <property name="lib.dir" value="${basedir}/lib" />
+        <property name="target.dir" value="${basedir}/target" />
+        <property name="classes.dir" value="${target.dir}/classes" />
+
+        <!-- Thirdparty jar files -->
+        <fileset id="jar.files" dir="${lib.dir}">
+        </fileset>
+
+        <!-- Filter out the non-java file -->
+        <patternset id="class.filter">
+                <include name="**/*.properties" />
+                <include name="**/*.xml" />
+        </patternset>
+
+        <!-- Set class path -->
+        <path id="class.path">
+                <fileset refid="jar.files" />
+                <fileset dir="${lib.dir}">
+                        <patternset>
+                                <include name="junit-4.7.jar" />
+                        </patternset>
+                </fileset>
+                <pathelement location="${classes.dir}" />
+        </path>
+
+        <!-- Make directory -->
+        <target name="prepare">
+                <delete dir="${target.dir}" />
+                <mkdir dir="${target.dir}" />
+        </target>
+
+        <!-- Compiles all the classes -->
+        <target name="compile" depends="prepare">
+                <mkdir dir="${classes.dir}" />
+
+                <copy todir="${classes.dir}" includeEmptyDirs="no">
+                        <fileset dir="${src.dir}">
+                                <patternset refid="class.filter" />
+                        </fileset>
+                </copy>
+
+                <javac srcdir="${src.dir}" destdir="${classes.dir}/" debug="true">
+                        <classpath refid="class.path" />
+                </javac>
+        </target>
+
+        <!-- Generate the beansdb4j jar -->
+        <target name="dist" depends="compile">
+                <jar destfile="${target.dir}/beansdb4j.jar">
+                        <fileset dir="${classes.dir}" includes="**/*" />
+                </jar>
+                <delete dir="${classes.dir}" />
+        </target>
+</project>

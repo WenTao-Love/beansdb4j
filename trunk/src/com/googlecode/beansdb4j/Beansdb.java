@@ -332,9 +332,9 @@ public class Beansdb {
     
     public static void main(String[] args) {
     	Map<InetSocketAddress, Range> servers = new HashMap<InetSocketAddress, Range>();
-    	servers.put(new InetSocketAddress("localhost", 7900), new Range(0, 16));
-    	servers.put(new InetSocketAddress("localhost", 7901), new Range(0, 16));
-    	servers.put(new InetSocketAddress("localhost", 7902), new Range(0, 16));
+    	servers.put(new InetSocketAddress("192.168.204.11", 7900), new Range(0, 16));
+    	servers.put(new InetSocketAddress("192.168.204.11", 7901), new Range(0, 16));
+    	servers.put(new InetSocketAddress("192.168.204.11", 7902), new Range(0, 16));
     	Beansdb db = new Beansdb(servers, 16, 3, 2, 2);
     	
     	db.set("foo", "bar");

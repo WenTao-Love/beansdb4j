@@ -48,6 +48,12 @@
                 </javac>
         </target>
 
+        <!-- Run Beansdb-->
+        <target name="run" depends="compile">
+              <java classname="com.googlecode.beansdb4j.Beansdb" classpathref="class.path" />
+        </target>
+
+
         <!-- Generate the beansdb4j jar -->
         <target name="dist" depends="compile">
                 <jar destfile="${target.dir}/beansdb4j.jar">

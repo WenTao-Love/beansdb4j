@@ -13,7 +13,7 @@ import org.apache.log4j.Logger;
 /**
  * Beansdb client class. for the sample usage, see the {@link #main(String[])} method.
  * 
- * @author james
+ * @author xumingming64398966
  *
  */
 public class Beansdb {

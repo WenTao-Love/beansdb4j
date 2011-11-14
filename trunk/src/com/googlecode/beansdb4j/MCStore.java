@@ -11,7 +11,7 @@ import net.spy.memcached.MemcachedClient;
 /**
  * Wrapper class for the memcached protocol client.
  * 
- * @author james
+ * @author xumingming64398966
  *
  */
 public class MCStore {
